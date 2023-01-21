@@ -4,6 +4,8 @@ const asyncHandler = require("express-async-handler");
 const { v4: uuidv4, stringify } = require("uuid");
 const { getDb } = require("../db/db");
 
+//TODO: add update user functionality
+
 // @desc    register new user
 // @route   POST /api/users
 // @access  Public
@@ -13,7 +15,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (!name || !email || !password || !balance) {
     res.status(400);
-    throw new Error("Please add all required fields");
+    throw new Error("Please provide all required fields");
   }
 
   const userExists = await getDb().query(
