@@ -95,6 +95,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
   if (user && (await bcrypt.compare(password, user.password))) {
     //returns the token if true
 
+    console.log("user logged in");
     res.status(201).json({
       _id: user.id,
       name: user.name,

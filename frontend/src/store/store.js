@@ -1,16 +1,35 @@
 import { create } from "zustand";
+import { authHelpers } from "../api/axios";
 
-const useStore = create((set) => ({
-  user: null,
-  inc: () => set((state) => ({ count: state.count + 1 })),
+const [useAuthStore] = create((set) => ({
+  user: {},
+  token: "",
+  setUserData: (user, token) => set({ user, token }),
+  clearUserData: () => set({ user: {}, token: "" }),
+  login: async (userData) => {
+    try {
+      const response = await authHelpers.login(userData);
+      const { user, token } = response.data;
+      set({ user, token });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+  register: async (userData) => {
+    try {
+      const response = await authHelpers.register(userData);
+      const { user, token } = response.data;
+      set({ user, token });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+  logout: () => {
+    clearUserData();
+    authHelpers.logout();
+  },
 }));
 
-function Controls() {
-  const inc = useStore((state) => state.inc);
-  return <button onClick={inc}>one up</button>;
-}
-
-function Counter() {
-  const count = useStore((state) => state.count);
-  return <h1>{count}</h1>;
-}
+export default useAuthStore;

@@ -1,5 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import { FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
+import { authHelpers } from "../api/axios";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
@@ -10,11 +14,16 @@ function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password1: "",
+    password: "",
     password2: "",
   });
 
-  const { name, email, password1, password2 } = formData;
+  const { name, email, password, password2 } = formData;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -22,8 +31,31 @@ function Register() {
       [e.target.name]: e.target.value,
     }));
   };
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+    console.log("click");
+
+    if (password !== password2) {
+      toast.error("Passwords do not match");
+      console.log("vlick");
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+      try {
+        console.log(userData);
+        await authHelpers.register(userData);
+        navigate("/");
+      } catch (err) {
+        if (!err?.response) {
+          toast.error("No server response");
+        } else {
+          toast.error("Registration failed");
+        }
+      }
+    }
   };
 
   return (
@@ -41,12 +73,13 @@ function Register() {
             type="text"
             id="name"
             name="name"
+            ref={userRef}
             value={name}
             placeholder=" enter your name"
             onChange={onChange}
           />
           <input
-            type="text"
+            type="email"
             id="email"
             name="email"
             value={email}
@@ -54,15 +87,15 @@ function Register() {
             onChange={onChange}
           />
           <input
-            type="text"
-            id="password1"
-            name="password1"
-            value={password1}
+            type="password"
+            id="password"
+            name="password"
+            value={password}
             placeholder="enter your password"
             onChange={onChange}
           />
           <input
-            type="text"
+            type="password"
             id="password2"
             name="password2"
             value={password2}
