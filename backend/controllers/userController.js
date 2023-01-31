@@ -10,12 +10,17 @@ const { getDb } = require("../db/db");
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, balance } = req.body;
+  const { name, email, password } = req.body;
   const id = uuidv4();
 
-  if (!name || !email || !password || !balance) {
+  if (!name || !email || !password) {
     res.status(400);
-    throw new Error("Please provide all required fields");
+    throw new Error(
+      "Please provide all required fields: ",
+      name,
+      email,
+      password
+    );
   }
 
   const userExists = await getDb().query(
@@ -32,14 +37,21 @@ const registerUser = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   try {
-    const [userResult] = await getDb().query(
-      "INSERT INTO users (id, name, email, password, balance) VALUES ($1, $2, $3, $4, $5)",
-      [id, name, email, hashedPassword, balance]
+    const userResult = await getDb().query(
+      "INSERT INTO users (id, name, email, password) VALUES ($1, $2, $3, $4)",
+      [id, name, email, hashedPassword]
     );
 
     console.log(`User created: `, email, name);
 
-    res.status(201).json(name);
+    const user = {
+      _id: id,
+      name: name,
+      email: email,
+      token: generateToken(id),
+    };
+
+    res.status(201).json(user);
   } catch (err) {
     console.error("ERROR: ", err);
 
