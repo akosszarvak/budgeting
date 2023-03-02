@@ -3,14 +3,13 @@ import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
-import { authHelpers } from "../api/axios";
+import { useSignup } from "../hooks/useSignup";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
 
 function Register() {
   const userRef = useRef();
-  const errRef = useRef();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,12 +17,22 @@ function Register() {
     password2: "",
   });
 
+  const { signup, error, isLoading, success } = useSignup();
   const { name, email, password, password2 } = formData;
   const navigate = useNavigate();
 
   useEffect(() => {
-    userRef.current.focus();
-  }, []);
+    if (error) {
+      toast.error(error);
+    }
+
+    if (success) {
+      toast.success(success);
+      console.log("success");
+      navigate("/");
+    }
+    // userRef.current.focus();
+  }, [error, success]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -31,13 +40,14 @@ function Register() {
       [e.target.name]: e.target.value,
     }));
   };
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("click");
 
-    if (password !== password2) {
+    if (name === "" || email === "" || password === "" || password2 === "") {
+      toast.error("Please fill out the form");
+    } else if (password !== password2 || !password) {
       toast.error("Passwords do not match");
-      console.log("vlick");
     } else {
       const userData = {
         name,
@@ -45,9 +55,7 @@ function Register() {
         password,
       };
       try {
-        console.log(userData);
-        await authHelpers.register(userData);
-        navigate("/");
+        await signup(userData);
       } catch (err) {
         if (!err?.response) {
           toast.error("No server response");
@@ -58,6 +66,13 @@ function Register() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <Spinner />
+      </>
+    );
+  }
   return (
     <>
       <section>

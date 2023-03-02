@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { authHelpers } from "../api/axios";
+import Spinner from "../components/Spinner";
+import { useLogin } from "../hooks/useLogin";
 
 function Login() {
   const userRef = useRef();
@@ -11,12 +12,20 @@ function Login() {
     password: "",
   });
 
+  const { login, error, isLoading, success } = useLogin();
   const { email, password } = formData;
   const navigate = useNavigate();
 
   useEffect(() => {
-    userRef.current.focus();
-  }, []);
+    if (error) {
+      toast.error(error);
+    }
+    if (success) {
+      toast.success(success);
+      console.log("success");
+      navigate("/");
+    }
+  }, [error, success]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -26,15 +35,16 @@ function Login() {
   };
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (email === "" || password === "") {
+      toast.error("Please fill out the form");
+    }
     const userData = {
       email,
       password,
     };
 
     try {
-      console.log(userData);
-      await authHelpers.login(userData);
-      navigate("/");
+      await login(userData);
     } catch (err) {
       if (!err?.response) {
         toast.error("No server response");
@@ -43,12 +53,20 @@ function Login() {
       }
     }
   };
+  if (isLoading) {
+    return (
+      <>
+        <Spinner />
+      </>
+    );
+  }
+
   return (
     <>
       <section>
         <h1>
           <FaUser />
-          Login
+          Login Page
         </h1>{" "}
         <p>Enter your credentials</p>
       </section>
