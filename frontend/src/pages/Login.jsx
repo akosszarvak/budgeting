@@ -91,7 +91,9 @@ function Login() {
           />
 
           <div>
-            <button type="submit">Submit</button>
+            <button disabled={isLoading} type="submit">
+              Submit
+            </button>
           </div>
         </form>
       </section>

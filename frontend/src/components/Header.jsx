@@ -1,18 +1,21 @@
-import { useEffect } from "react";
 import { FaSignInAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { authHelpers } from "../api/axios";
+import { useLogout } from "../hooks/useLogout";
 import { toast } from "react-toastify";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 function Header() {
   const navigate = useNavigate();
+  const { logout } = useLogout();
 
-  // const { user } = useSelector((state) => state.auth);
+  const { user } = useAuthContext();
 
-  const onLogout = () => {
+  const handleClick = () => {
+    logout();
     toast.success("Logout succesful!");
     navigate("/login");
   };
+
   return (
     <header className="">
       Header
@@ -20,10 +23,11 @@ function Header() {
         <Link to="/">BudgetBuddy</Link>
       </div>
       <ul>
-        {false ? (
+        {user ? (
           <>
             {" "}
-            <button onClick={onLogout}>
+            <span>Welcome {user.name}!</span>
+            <button onClick={handleClick}>
               <FaSignOutAlt />
               Logout
             </button>
@@ -31,10 +35,10 @@ function Header() {
         ) : (
           <>
             <li>
-              <button onClick={onLogout}>
+              {/* <button onClick={handleClick}>
                 <FaSignOutAlt />
                 Logout
-              </button>
+              </button> */}
               <Link to="/login">
                 <FaSignInAlt />
                 Login

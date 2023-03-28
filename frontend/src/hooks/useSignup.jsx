@@ -20,7 +20,7 @@ export const useSignup = () => {
       //save user to localstorage
       localStorage.setItem("user", JSON.stringify(response.data));
       //update auth context
-      dispatch({ type: "LOGIN", payload: response });
+      dispatch({ type: "LOGIN", payload: response.data });
 
       setSuccess("Registration successful");
       setIsLoading(false);

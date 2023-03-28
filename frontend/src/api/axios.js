@@ -23,9 +23,4 @@ const login = async (userData) => {
   }
 };
 
-// Logout user
-const logout = () => {
-  localStorage.removeItem("user");
-};
-
-export const authHelpers = { register, login, logout };
+export const authHelpers = { register, login };

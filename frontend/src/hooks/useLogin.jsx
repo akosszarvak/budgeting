@@ -11,6 +11,7 @@ export const useLogin = () => {
   const login = async (userData) => {
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
     const response = await authHelpers.login(userData);
     console.log("response in usesignup hook: ", response);
@@ -19,7 +20,7 @@ export const useLogin = () => {
       //save user to localstorage
       localStorage.setItem("user", JSON.stringify(response.data));
       //update auth context
-      dispatch({ type: "LOGIN", payload: response });
+      dispatch({ type: "LOGIN", payload: response.data });
 
       setSuccess("Login successful");
       setIsLoading(false);
