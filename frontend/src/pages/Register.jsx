@@ -80,7 +80,7 @@ function Register() {
           <FaUser />
           Register
         </h1>{" "}
-        <p>Please create an account</p>
+        <p>Please create an account first</p>
       </section>
       <section>
         <form onSubmit={onSubmit}>
@@ -90,7 +90,7 @@ function Register() {
             name="name"
             ref={userRef}
             value={name}
-            placeholder=" enter your name"
+            placeholder="enter your name"
             onChange={onChange}
           />
           <input

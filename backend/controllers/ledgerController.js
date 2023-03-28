@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4, stringify } = require("uuid");
 const { getDb } = require("../db/db");
-const { updateBalance } = require("../utilities/updateBalance");
 
 // @desc    get user's ledgers
 // @route   GET /api/ledgers
@@ -49,7 +48,6 @@ const addLedger = asyncHandler(async (req, res) => {
       [id, user_id, category_id, trans_type, name, amount, note]
     );
     console.log(`Transaction created:`, ledger);
-    updateBalance(user_id, amount, trans_type);
 
     res.status(201).json(JSON.stringify(ledger));
   } catch (err) {
@@ -77,7 +75,7 @@ const deleteLedger = asyncHandler(async (req, res) => {
       "DELETE FROM ledgers WHERE id = $1 AND user_id = $2",
       [id, user_id]
     );
-    updateBalance(user_id, amount, "EXT");
+
     console.log(`Ledger deleted: ${id}`);
 
     res.status(201).json(JSON.stringify(`Ledger deleted: ${id}`));

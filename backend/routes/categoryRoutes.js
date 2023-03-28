@@ -8,7 +8,7 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/", protect, addCategory);
-router.post("/", protect, addUserCategory);
+router.post("/user-category", protect, addUserCategory);
 router.delete("/", protect, deleteCategory);
 // router.get("/", protect, getLedgers);
 
