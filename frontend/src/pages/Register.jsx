@@ -1,15 +1,38 @@
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
+import { useSignup } from "../hooks/useSignup";
+
+const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
 
 function Register() {
+  const userRef = useRef();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password1: "",
+    password: "",
     password2: "",
   });
 
-  const { name, email, password1, password2 } = formData;
+  const { signup, error, isLoading, success } = useSignup();
+  const { name, email, password, password2 } = formData;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+
+    if (success) {
+      toast.success(success);
+      console.log("success");
+      navigate("/");
+    }
+    // userRef.current.focus();
+  }, [error, success]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -17,10 +40,39 @@ function Register() {
       [e.target.name]: e.target.value,
     }));
   };
-  const onSubmit = (e) => {
+
+  const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (name === "" || email === "" || password === "" || password2 === "") {
+      toast.error("Please fill out the form");
+    } else if (password !== password2 || !password) {
+      toast.error("Passwords do not match");
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+      try {
+        await signup(userData);
+      } catch (err) {
+        if (!err?.response) {
+          toast.error("No server response");
+        } else {
+          toast.error("Registration failed");
+        }
+      }
+    }
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <Spinner />
+      </>
+    );
+  }
   return (
     <>
       <section>
@@ -36,12 +88,13 @@ function Register() {
             type="text"
             id="name"
             name="name"
+            ref={userRef}
             value={name}
             placeholder=" enter your name"
             onChange={onChange}
           />
           <input
-            type="text"
+            type="email"
             id="email"
             name="email"
             value={email}
@@ -49,15 +102,15 @@ function Register() {
             onChange={onChange}
           />
           <input
-            type="text"
-            id="password1"
-            name="password1"
-            value={password1}
+            type="password"
+            id="password"
+            name="password"
+            value={password}
             placeholder="enter your password"
             onChange={onChange}
           />
           <input
-            type="text"
+            type="password"
             id="password2"
             name="password2"
             value={password2}
@@ -65,7 +118,9 @@ function Register() {
             onChange={onChange}
           />
           <div>
-            <button type="submit">Submit</button>
+            <button disabled={isLoading} type="submit">
+              Submit
+            </button>
           </div>
         </form>
       </section>
