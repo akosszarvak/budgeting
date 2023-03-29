@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "/api/users";
 
-//login user
+//register user
 const register = async (userData) => {
   try {
     const response = await axios.post(API_URL, userData);
