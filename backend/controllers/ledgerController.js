@@ -10,12 +10,13 @@ const { updateBalance } = require("../utilities/updateBalance");
 // @access  private
 const getLedgers = asyncHandler(async (req, res) => {
   const user_id = req.user.id;
+  console.log("user_id", user_id);
   try {
     const ledgers = await getDb().any(
       "SELECT id, trans_type, name, amount FROM ledgers WHERE user_id = $1",
       [user_id]
     );
-    console.log(ledgers);
+    // console.log(ledgers);
     res.status(201).json(JSON.stringify(ledgers));
   } catch (error) {
     console.error("ERROR: ", error);
@@ -49,7 +50,6 @@ const addLedger = asyncHandler(async (req, res) => {
       [id, user_id, category_id, trans_type, name, amount, note]
     );
     console.log(`Transaction created:`, ledger);
-    updateBalance(user_id, amount, trans_type);
 
     res.status(201).json(JSON.stringify(ledger));
   } catch (err) {
@@ -69,15 +69,13 @@ const updateLedger = asyncHandler(async (req, res) => {});
 const deleteLedger = asyncHandler(async (req, res) => {
   const { id } = req.body;
   const user_id = req.user.id;
-  console.log("getting to the delete ledger function");
 
   try {
-    const amount = await getDb().query();
     const user = await getDb().query(
       "DELETE FROM ledgers WHERE id = $1 AND user_id = $2",
       [id, user_id]
     );
-    updateBalance(user_id, amount, "EXT");
+
     console.log(`Ledger deleted: ${id}`);
 
     res.status(201).json(JSON.stringify(`Ledger deleted: ${id}`));

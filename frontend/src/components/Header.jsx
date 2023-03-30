@@ -3,16 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
 import { toast } from "react-toastify";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Header() {
   const navigate = useNavigate();
   const { logout } = useLogout();
+  const queryClient = useQueryClient();
 
   const { user } = useAuthContext();
 
   const handleClick = () => {
     logout();
+    queryClient.removeQueries(["ledgers"]);
     toast.success("Logout succesful!");
+
     navigate("/login");
   };
 
