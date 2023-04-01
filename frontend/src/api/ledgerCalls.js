@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const API_URL = "/api/ledgers";
-const accessToken = JSON.parse(localStorage.getItem("user")).token;
+// const accessToken = JSON.parse(localStorage?.getItem("user")).token;
 
-const authAxios = axios.create({
-  baseURL: API_URL,
-  headers: {
-    Authorization: `Bearer ${accessToken}`,
-  },
-});
+// const authAxios = axios.create({
+//   baseURL: API_URL,
+//   headers: {
+//     Authorization: `Bearer ${accessToken}`,
+//   },
+// });
 
 //get user's ledgers
 const getLedgers = async (user) => {

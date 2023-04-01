@@ -16,9 +16,9 @@ import Header from "./components/Header";
 function App() {
   const { user } = useAuthContext();
   return (
-    <>
+    <div className="bg-slate-50 dark:bg-gray-900 md:px-20 lg:px-40">
       <Router>
-        <div className="">
+        <div className="container mx-auto bg-slate-50">
           <Header />
           <Routes>
             <Route
@@ -37,7 +37,7 @@ function App() {
         </div>
       </Router>
       <ToastContainer />
-    </>
+    </div>
   );
 }
 

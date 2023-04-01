@@ -62,17 +62,15 @@ function Login() {
   }
 
   return (
-    <>
-      <section>
-        <h1>
-          <FaUser />
-          Login Page
-        </h1>{" "}
-        <p>Enter your credentials</p>
-      </section>
-      <section>
-        <form onSubmit={onSubmit}>
+    <div className="mx-auto mt-4  max-w-md border-2 border-gray-300 bg-white px-6 py-7 shadow-md">
+      <h1 className="mb-4 text-2xl font-bold text-gray-900">Please, login</h1>
+      <p className="text-md text-gray-700">Enter your credentials</p>
+
+      <form className="mt-6" onSubmit={onSubmit}>
+        <div className="mb-4">
+          <label className="mb-2 block text-left  text-gray-700">Email</label>
           <input
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="email"
             id="email"
             name="email"
@@ -81,7 +79,13 @@ function Login() {
             placeholder="enter your email"
             onChange={onChange}
           />
+        </div>
+        <div className="mb-4">
+          <label className="mb-2 block text-left  text-gray-700">
+            Password
+          </label>
           <input
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="password"
             id="password"
             name="password"
@@ -89,15 +93,18 @@ function Login() {
             placeholder="enter your password"
             onChange={onChange}
           />
-
-          <div>
-            <button disabled={isLoading} type="submit">
-              Submit
-            </button>
-          </div>
-        </form>
-      </section>
-    </>
+        </div>
+        <div className="p-4">
+          <button
+            disabled={isLoading}
+            type="submit"
+            className=" rounded-md bg-red-600 py-1 px-3 text-white shadow-lg hover:bg-red-900 hover:shadow-none"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 

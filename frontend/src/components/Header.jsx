@@ -21,41 +21,51 @@ function Header() {
   };
 
   return (
-    <header className="">
-      Header
-      <div className="logo">
-        <Link to="/">BudgetBuddy</Link>
-      </div>
-      <ul>
-        {user ? (
-          <>
-            {" "}
-            <span>Welcome {user.name}!</span>
-            <button onClick={handleClick}>
-              <FaSignOutAlt />
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <li>
-              {/* <button onClick={handleClick}>
+    <nav className=" border-grax-200 ">
+      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
+        <div className="flex items-center">
+          <Link
+            to="/"
+            className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white"
+          >
+            BudgetBuddy
+          </Link>
+        </div>
+        <div className="hidden w-full md:block md:w-auto">
+          {user ? (
+            <>
+              {" "}
+              <span>Welcome {user.name}!</span>
+              <button onClick={handleClick}>
                 <FaSignOutAlt />
                 Logout
-              </button> */}
-              <Link to="/login">
-                <FaSignInAlt />
-                Login
-              </Link>
-              <Link to="/register">
-                <FaUser />
-                Sign Up
-              </Link>
-            </li>
-          </>
-        )}
-      </ul>
-    </header>
+              </button>
+            </>
+          ) : (
+            <div className="mt-4 flex w-full flex-col rounded-lg border border-gray-100 p-4 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:p-0   ">
+              <div className="block w-full rounded py-2 pl-3 pr-4 text-gray-700 md:bg-transparent md:hover:text-blue-700">
+                <Link
+                  to="/login"
+                  className="container flex w-full flex-row items-center gap-2"
+                >
+                  {/* <FaSignInAlt /> */}
+                  Login
+                </Link>
+              </div>
+              <div className="block w-full rounded py-2 pl-3 pr-4 text-gray-900 md:bg-transparent md:hover:text-blue-700">
+                <Link
+                  to="/register"
+                  className="container flex w-full flex-row items-center gap-2"
+                >
+                  {/* <FaUser /> */}
+                  Register
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </nav>
   );
 }
 
