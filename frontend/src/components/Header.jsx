@@ -21,43 +21,58 @@ function Header() {
   };
 
   return (
-    <nav className=" border-grax-200 ">
-      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
-        <div className="flex items-center">
-          <Link
-            to="/"
-            className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white"
-          >
+    <nav className="mx-auto  w-full">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between p-4">
+        <div className="flex">
+          <Link to="/" className="text-xl font-semibold dark:text-white">
             BudgetBuddy
           </Link>
         </div>
-        <div className="hidden w-full md:block md:w-auto">
+        <div className="w-full">
           {user ? (
-            <>
+            <div className="flex align-middle">
               {" "}
-              <span>Welcome {user.name}!</span>
-              <button onClick={handleClick}>
-                <FaSignOutAlt />
-                Logout
-              </button>
-            </>
-          ) : (
-            <div className="mt-4 flex w-full flex-col rounded-lg border border-gray-100 p-4 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:p-0   ">
-              <div className="block w-full rounded py-2 pl-3 pr-4 text-gray-700 md:bg-transparent md:hover:text-blue-700">
+              <span className="w-1/2 align-bottom text-xl">
+                Welcome {user.name}!
+              </span>
+              <div className="flex w-full items-center justify-end gap-6 text-lg">
+                {" "}
                 <Link
                   to="/login"
-                  className="container flex w-full flex-row items-center gap-2"
+                  className="cursor-pointer text-gray-900 hover:text-gray-500 hover:shadow-sm"
                 >
-                  {/* <FaSignInAlt /> */}
+                  Transactions
+                </Link>
+                <Link
+                  to="/login"
+                  className="cursor-pointer text-gray-900 hover:text-gray-500 hover:shadow-sm"
+                >
+                  Categories
+                </Link>
+                <button
+                  className="gap flex h-4/5 items-center rounded-lg bg-blue-500 p-1 px-2 align-middle text-white shadow-md hover:cursor-pointer hover:bg-blue-800 hover:shadow-none"
+                  onClick={handleClick}
+                >
+                  <FaSignOutAlt />
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-4 flex w-full flex-col rounded-lg border border-gray-100 p-4 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:p-0   ">
+              <div className="py-2">
+                <Link
+                  to="/login"
+                  className="cursor-pointer text-gray-900 hover:text-gray-500 hover:shadow-sm"
+                >
                   Login
                 </Link>
               </div>
-              <div className="block w-full rounded py-2 pl-3 pr-4 text-gray-900 md:bg-transparent md:hover:text-blue-700">
+              <div className="py-2">
                 <Link
                   to="/register"
-                  className="container flex w-full flex-row items-center gap-2"
+                  className="cursor-pointer text-gray-900 hover:text-gray-500 hover:shadow-sm"
                 >
-                  {/* <FaUser /> */}
                   Register
                 </Link>
               </div>

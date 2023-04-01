@@ -98,7 +98,7 @@ function Login() {
           <button
             disabled={isLoading}
             type="submit"
-            className=" rounded-md bg-red-600 py-1 px-3 text-white shadow-lg hover:bg-red-900 hover:shadow-none"
+            className=" rounded-lg bg-blue-500 p-2 align-middle text-white shadow-md hover:cursor-pointer hover:bg-blue-800 hover:shadow-none"
           >
             Login
           </button>
