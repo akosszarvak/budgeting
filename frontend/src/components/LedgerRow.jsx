@@ -1,15 +1,19 @@
 import React from "react";
+import { format } from "date-fns";
 
 function LedgerRow({ ledger, deleteLedger, index }) {
   const even = index % 2;
   return (
     <div
       key={ledger.id}
-      className={`m-3 mx-auto flex w-4/5 items-center justify-between rounded-md border border-gray-400 p-1 align-middle shadow-md hover:bg-gray-200 hover:shadow-none ${
-        even === 1 ? "bg-gray-300" : "bg-gray-50"
+      className={`m-3  flex items-center justify-between rounded-md border border-gray-400  px-3 py-1 align-middle shadow-md hover:bg-blue-200 hover:shadow-none ${
+        even === 1 ? "bg-blue-100" : "bg-gray-50"
       }`}
     >
-      <div className=" mx-2 w-1/2 py-2 text-left"> 2023 01 01 {index} </div>
+      <div className=" mx-2 w-1/2 py-2 text-left">
+        {" "}
+        {format(new Date(ledger.created_at), "yyyy-MM-dd HH")}:00
+      </div>
       <div className="w-1/2 py-2 text-left">{ledger.name}</div>
       <div className="w-1/2 py-2 text-left">{ledger.amount} HUF</div>
       <div
@@ -19,6 +23,8 @@ function LedgerRow({ ledger, deleteLedger, index }) {
       >
         {ledger.trans_type}
       </div>
+      <div className="w-1/2 py-2 text-left">{ledger.category}</div>
+      <div className="w-1/2 py-2 text-left text-sm">{ledger.note}</div>
       <div className="mr-3 w-1/2 py-2 text-right">
         <button
           onClick={() => deleteLedger(ledger.id)}

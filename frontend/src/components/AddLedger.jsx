@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function AddLedger({ addLedger }) {
+function AddLedger({ addLedger, categories }) {
   const [formData, setFormData] = useState({
     category_id: "cb9b35e0-7de3-45eb-8368-7dddf3b265f6",
     name: "",
@@ -8,7 +8,9 @@ function AddLedger({ addLedger }) {
     amount: 0,
     note: "",
   });
+
   const { category_id, name, trans_type, amount, note } = formData;
+
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -16,6 +18,7 @@ function AddLedger({ addLedger }) {
     }));
     console.log(formData);
   };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     console.log("FORM DATA", formData);
@@ -30,15 +33,18 @@ function AddLedger({ addLedger }) {
       }
     }
   };
+
   return (
     <div className="flex">
       <form onSubmit={onSubmit} className="flex">
         <div className="flex flex-col">
           <label>category</label>
           <select value={category_id} name="category_id" onChange={onChange}>
-            <option key="health" value="cb9b35e0-7de3-45eb-8368-7dddf3b265f6">
-              Health
-            </option>
+            {categories.map((category) => (
+              <option key={category.name} value={category.id}>
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex flex-col">

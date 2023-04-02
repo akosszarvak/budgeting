@@ -26,12 +26,31 @@ const getLedgers = async (user) => {
   }
 };
 
+//get user's balance in [income: x, expense: y] format
+const getBalance = async (user) => {
+  const token = user.queryKey[1].token;
+  try {
+    const response = await axios.get(API_URL + "/balance", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    // console.log("balance: ", JSON.parse(response.data));
+    return JSON.parse(response.data);
+  } catch (error) {
+    console.log("error here");
+
+    return error.response;
+  }
+};
+
 const addLedger = async (ledgerData, user) => {
   const token = user.token;
+  console.log("here");
   try {
+    console.log("what ap");
     const response = await axios.post(API_URL, ledgerData, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log("hhhhhhh");
     console.log(JSON.parse(response.data));
     return JSON.parse(response.data);
   } catch (error) {
@@ -79,4 +98,5 @@ export const ledgerCalls = {
   deleteLedger,
   addLedger,
   updateLedger,
+  getBalance,
 };

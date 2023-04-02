@@ -1,35 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
 import Loading from "../components/Spinner";
 import LedgerRow from "../components/LedgerRow";
 import AddLedger from "../components/AddLedger";
 import { ledgerCalls } from "../api/ledgerCalls";
+import { categoryCalls } from "../api/categoryCalls";
 
 function Dashboard() {
   const [showAddLedgerRow, setShowAddLedgerRow] = useState(false);
   const queryClient = useQueryClient();
   const { user } = useAuthContext();
 
-  const {
-    isLoading,
-    isError,
-    data: ledgers,
-    error,
-  } = useQuery({
-    queryKey: ["ledgers", user],
-    queryFn: (user) => {
-      return ledgerCalls.getLedgers(user);
-    },
+  const [ledgerQuery, balanceQuery, categoryQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ["ledgers", user],
+        queryFn: (user) => {
+          return ledgerCalls.getLedgers(user);
+        },
+      },
+      {
+        queryKey: ["balance", user],
+        queryFn: (user) => {
+          return ledgerCalls.getBalance(user);
+        },
+      },
+      {
+        queryKey: ["categories", user],
+        queryFn: (user) => {
+          return categoryCalls.getCategories(user);
+        },
+      },
+    ],
   });
-
-  const updatedLedger = {
-    "category_id": "cb9b35e0-7de3-45eb-8368-7dddf3b265f6",
-    "name": "this is a new a ledger",
-    "trans_type": "INC",
-    "amount": 3000,
-    "note": "nothing to see here",
-  };
 
   // const { mutate: updateLedger } = useMutation(
   //   (updatedLedger) => ledgerCalls.updatesLedger(updatedLedger),
@@ -58,28 +62,48 @@ function Dashboard() {
     }
   );
 
-  if (isLoading) {
+  if (ledgerQuery.isLoading) {
+    return <span>Loading...</span>;
+  }
+  if (balanceQuery.isLoading) {
+    return <span>Loading...</span>;
+  }
+  if (categoryQuery.isLoading) {
     return <span>Loading...</span>;
   }
 
-  if (isError) {
+  if (ledgerQuery.isError) {
+    return <span>Error: {error.message}</span>;
+  }
+  if (balanceQuery.isError) {
     return <span>Error: {error.message}</span>;
   }
 
-  console.log("ledgers ", ledgers);
+  if (categoryQuery.isError) {
+    return <span>Error: {error.message}</span>;
+  }
+
   return (
     <div className="pt-8">
       <div className="flex h-20 justify-between gap-4 rounded-xl bg-blue-200 p-3 text-left align-middle">
         <div className="">
-          <h2 className="text-3xl text-blue-900">2200 HUF</h2>
+          <h2 className="text-3xl text-blue-900">
+            {parseInt(balanceQuery.data[0].income) -
+              parseInt(balanceQuery.data[0].expense)}{" "}
+            HUF
+          </h2>
           <p className="text-xs  text-blue-500">Current balance</p>
         </div>
         <div className="">
-          <h2 className="text-3xl text-green-700">2200 HUF</h2>
+          <h2 className="text-3xl text-green-700">
+            {balanceQuery.data[0].income} HUF
+          </h2>
           <p className="text-xs text-blue-500">Income</p>
         </div>
         <div className="">
-          <h2 className="text-3xl text-red-700">2200 HUF</h2>
+          <h2 className="text-3xl text-red-700">
+            {balanceQuery.data[0].expense} HUF
+          </h2>
           <p className="text-xs  text-blue-500">Expenses</p>
         </div>
         <div className="flex h-1/2 bg-blue-200 align-middle">
@@ -119,8 +143,10 @@ function Dashboard() {
             +
           </button>
         </div>
-        {showAddLedgerRow && <AddLedger addLedger={addLedger} />}
-        {ledgers.map((ledger, index) => (
+        {showAddLedgerRow && (
+          <AddLedger addLedger={addLedger} categories={categoryQuery.data} />
+        )}
+        {ledgerQuery.data.map((ledger, index) => (
           <LedgerRow
             ledger={ledger}
             deleteLedger={deleteLedger}
