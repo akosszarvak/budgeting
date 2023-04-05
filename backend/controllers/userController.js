@@ -3,14 +3,27 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4, stringify } = require("uuid");
 const { getDb } = require("../db/db");
+const {
+  validateRegister,
+  validateLogin,
+  validateDeleteUser,
+} = require("../utilities/joi-validators");
 
 //TODO: add update user functionality
 
 // @desc    register new user
 // @route   POST /api/users
 // @access  Public
+
 const registerUser = asyncHandler(async (req, res) => {
+  const { error } = validateRegister(req.body);
+  if (error) {
+    console.log("Validation error:", error.details[0].message);
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
   const { name, email, password } = req.body;
+
   const id = uuidv4();
 
   if (!name || !email || !password) {
@@ -84,6 +97,13 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   POST /api/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res, next) => {
+  const { error } = validateLogin(req.body);
+  if (error) {
+    console.log("Validation error:", error.details[0].message);
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
+
   const { email, password } = req.body;
 
   // //check for user email
@@ -113,10 +133,29 @@ const loginUser = asyncHandler(async (req, res, next) => {
 // @access  Private
 const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.body;
+  const { error } = validateDeleteUser(req.body);
+  if (error) {
+    console.log("Validation error:", error.details[0].message);
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
+
   console.log("getting to the delete function");
 
   try {
-    const user = await getDb().query("DELETE FROM users WHERE id = $1", [id]);
+    const getUser = await getDb().query(
+      "SELECT * FROM users WHERE id = $1",
+      id
+    );
+
+    console.log(getUser);
+    if (getUser) {
+      const deleteLedgers = await getDb().query(
+        "DELETE FROM ledgers WHERE user_id = $1",
+        [id]
+      );
+      const user = await getDb().query("DELETE FROM users WHERE id = $1", [id]);
+    }
 
     console.log(`User deleted: ${id}`);
 
