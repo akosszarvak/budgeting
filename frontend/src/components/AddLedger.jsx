@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 function AddLedger({ addLedger, categories }) {
   const [formData, setFormData] = useState({
-    category_id: "cb9b35e0-7de3-45eb-8368-7dddf3b265f6",
+    category_id: categories[0].id,
     name: "",
     trans_type: "INC",
     amount: 0,
@@ -22,14 +23,26 @@ function AddLedger({ addLedger, categories }) {
   const onSubmit = async (e) => {
     e.preventDefault();
     console.log("FORM DATA", formData);
-    try {
-      await addLedger(formData);
-    } catch (err) {
-      console.log(err);
-      if (!err?.response) {
-        toast.error("No server response");
-      } else {
-        toast.error("Action failed");
+    if (name === "") {
+      toast.error("Please add a name for the transaction");
+    } else if (amount === 0 || amount < 0 || amount === "") {
+      toast.error("Please provide a positive number for the transaction");
+    } else {
+      try {
+        await addLedger(formData);
+        setFormData((prevState) => ({
+          ...prevState,
+          name: "",
+          amount: 0,
+          note: "",
+        }));
+      } catch (err) {
+        console.log(err);
+        if (!err?.response) {
+          toast.error("No server response");
+        } else {
+          toast.error("Action failed");
+        }
       }
     }
   };

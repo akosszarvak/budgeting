@@ -44,13 +44,11 @@ const getBalance = async (user) => {
 
 const addLedger = async (ledgerData, user) => {
   const token = user.token;
-  console.log("here");
+
   try {
-    console.log("what ap");
     const response = await axios.post(API_URL, ledgerData, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log("hhhhhhh");
     console.log(JSON.parse(response.data));
     return JSON.parse(response.data);
   } catch (error) {

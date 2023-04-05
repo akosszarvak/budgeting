@@ -49,6 +49,7 @@ function Dashboard() {
     {
       onSettled: () => {
         queryClient.invalidateQueries(["ledgers"]);
+        queryClient.invalidateQueries(["balance"]);
       },
     }
   );
@@ -58,6 +59,7 @@ function Dashboard() {
     {
       onSettled: () => {
         queryClient.invalidateQueries(["ledgers"]);
+        queryClient.invalidateQueries(["balance"]);
       },
     }
   );
