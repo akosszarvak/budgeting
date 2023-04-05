@@ -4,6 +4,23 @@ const asyncHandler = require("express-async-handler");
 const { v4: uuidv4, stringify } = require("uuid");
 const { getDb } = require("../db/db");
 
+// @desc    get categories
+// @route   GET /api/categories
+// @access  private
+const getCategories = asyncHandler(async (req, res) => {
+  try {
+    const categories = await getDb().any("SELECT id, name FROM categories");
+    res.status(201).json(JSON.stringify(categories));
+  } catch (error) {
+    console.error("ERROR: ", error);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify(error),
+    };
+  }
+});
+
 // @desc    add new category
 // @route   POST /api/categories
 // @access  private
@@ -81,4 +98,9 @@ const deleteCategory = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { addCategory, addUserCategory, deleteCategory };
+module.exports = {
+  getCategories,
+  addCategory,
+  addUserCategory,
+  deleteCategory,
+};

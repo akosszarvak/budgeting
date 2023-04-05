@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useAuthContext } from "./useAuthContext";
 import { authHelpers } from "../api/axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useLogin = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
   const [success, setSuccess] = useState(null);
   const { dispatch } = useAuthContext();
+  // const queryClient = useQueryClient();
 
   const login = async (userData) => {
     setIsLoading(true);
@@ -19,6 +21,7 @@ export const useLogin = () => {
     if (response.status === 201) {
       //save user to localstorage
       localStorage.setItem("user", JSON.stringify(response.data));
+      // queryClient.invalidateQueries();
       //update auth context
       dispatch({ type: "LOGIN", payload: response.data });
 

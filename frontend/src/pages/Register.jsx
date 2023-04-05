@@ -74,17 +74,15 @@ function Register() {
     );
   }
   return (
-    <>
-      <section>
-        <h1>
-          <FaUser />
-          Register
-        </h1>{" "}
-        <p>Please create an account first</p>
-      </section>
-      <section>
-        <form onSubmit={onSubmit}>
+
+    <div className="mx-auto mt-4  max-w-md border-2 border-gray-300 bg-white px-6 py-7 shadow-md">
+      <h1 className="mb-4 text-2xl font-bold text-gray-900">Register</h1>{" "}
+      <p className="text-md text-gray-700">Please create an account</p>
+      <form className="mt-6" onSubmit={onSubmit}>
+        <div className="mb-4">
+          <label className="mb-2 block text-left  text-gray-700">Name</label>
           <input
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="text"
             id="name"
             name="name"
@@ -93,38 +91,58 @@ function Register() {
             placeholder="enter your name"
             onChange={onChange}
           />
+        </div>
+        <div className="mb-4">
+          <label className="mb-2 block text-left  text-gray-700">E-mail</label>
           <input
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="email"
             id="email"
             name="email"
             value={email}
-            placeholder="enter your email"
+            placeholder="enter your e-mail"
             onChange={onChange}
-          />
+          />{" "}
+        </div>
+        <div className="mb-4">
+          <label className="mb-2 block text-left  text-gray-700">
+            Password
+          </label>
           <input
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="password"
             id="password"
             name="password"
             value={password}
             placeholder="enter your password"
             onChange={onChange}
-          />
+          />{" "}
+        </div>
+        <div className="mb-4">
+          <label className="mb-2 block text-left  text-gray-700">
+            Confirm Password
+          </label>
           <input
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="password"
             id="password2"
             name="password2"
             value={password2}
             placeholder="confirm your password"
             onChange={onChange}
-          />
-          <div>
-            <button disabled={isLoading} type="submit">
-              Submit
-            </button>
-          </div>
-        </form>
-      </section>
-    </>
+          />{" "}
+        </div>
+        <div className="p-4">
+          <button
+            disabled={isLoading}
+            type="submit"
+            className="rounded-lg bg-blue-500 p-2 text-white shadow-md hover:cursor-pointer hover:bg-blue-800 hover:shadow-none"
+          >
+            Register
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 

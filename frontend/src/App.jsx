@@ -12,13 +12,14 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
   const { user } = useAuthContext();
   return (
-    <>
+    <div className="px-auto mx-auto min-h-screen bg-slate-50 dark:bg-gray-900">
       <Router>
-        <div className="">
+        <div className="container mx-auto bg-slate-50">
           <Header />
           <Routes>
             <Route
@@ -36,8 +37,9 @@ function App() {
           </Routes>
         </div>
       </Router>
+      <Footer />
       <ToastContainer />
-    </>
+    </div>
   );
 }
 
