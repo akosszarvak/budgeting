@@ -74,6 +74,7 @@ function Register() {
     );
   }
   return (
+
     <div className="mx-auto mt-4  max-w-md border-2 border-gray-300 bg-white px-6 py-7 shadow-md">
       <h1 className="mb-4 text-2xl font-bold text-gray-900">Register</h1>{" "}
       <p className="text-md text-gray-700">Please create an account</p>
@@ -87,7 +88,7 @@ function Register() {
             name="name"
             ref={userRef}
             value={name}
-            placeholder=" enter your name"
+            placeholder="enter your name"
             onChange={onChange}
           />
         </div>

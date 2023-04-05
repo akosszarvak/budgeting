@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
+
 import { useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
 import Loading from "../components/Spinner";
 import LedgerRow from "../components/LedgerRow";
@@ -7,10 +8,13 @@ import AddLedger from "../components/AddLedger";
 import { ledgerCalls } from "../api/ledgerCalls";
 import { categoryCalls } from "../api/categoryCalls";
 
+
 function Dashboard() {
   const [showAddLedgerRow, setShowAddLedgerRow] = useState(false);
   const queryClient = useQueryClient();
   const { user } = useAuthContext();
+  // const { isLoading, data: ledgers } = useQuery("ledgers");
+
 
   const [ledgerQuery, balanceQuery, categoryQuery] = useQueries({
     queries: [
@@ -159,6 +163,7 @@ function Dashboard() {
       </div>
     </div>
   );
+
 }
 
 export default Dashboard;
