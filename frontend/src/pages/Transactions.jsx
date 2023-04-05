@@ -8,7 +8,7 @@ import AddLedger from "../components/AddLedger";
 import { ledgerCalls } from "../api/ledgerCalls";
 import { categoryCalls } from "../api/categoryCalls";
 
-function Dashboard() {
+function Transactions() {
   const [showAddLedgerRow, setShowAddLedgerRow] = useState(false);
   const queryClient = useQueryClient();
   const { user } = useAuthContext();
@@ -88,39 +88,10 @@ function Dashboard() {
   }
 
   return (
-    <div className="pt-8">
-      <div className="flex justify-between gap-4 p-3 text-left align-middle">
-        <div className=" bg-blue-200 ">
-          <h2 className="text-3xl text-blue-900 ">
-            {parseInt(balanceQuery.data[0].income) -
-              parseInt(balanceQuery.data[0].expense)}{" "}
-            HUF
-          </h2>
-          <p className="text-xs text-blue-500">Current balance</p>
-        </div>
-        <div className="flex flex-col items-center">
-          <h2 className="text-lg text-green-700">
-            {balanceQuery.data[0].income} HUF
-          </h2>
-          <p className="text-xs text-blue-500">Income</p>{" "}
-          <h2 className="text-lg text-red-700">
-            {balanceQuery.data[0].expense} HUF
-          </h2>
-          <p className="text-xs  text-blue-500">Expenses</p>
-        </div>
-
-        <div className="flex h-1/2 bg-blue-200 align-middle">
-          <select className="flex bg-blue-200">
-            <option value="">Start</option>
-          </select>{" "}
-          <select className="flex bg-blue-200">
-            <option value="">End</option>
-          </select>
-        </div>
-      </div>
-      <div className="m-2 rounded-xl border-2 border-gray-300 shadow-sm">
-        <div className=" m-auto flex justify-between align-middle">
-          <div>
+    <div className="my-3 pt-5 pb-4">
+      <div className="border-1 m-2 rounded-xl border-gray-300 shadow-sm">
+        <div className="mx-4 flex justify-end p-3">
+          {/* <div>
             Sort by{" "}
             <select>
               <option key="date" value="date">
@@ -136,15 +107,17 @@ function Dashboard() {
               </option>
               ,
             </select>
-          </div>
-          <h2>Add New Transaction</h2>
+          </div> */}
+          <div className="flex justify-end gap-3 ">
+            <h2>Add New Transaction</h2>
 
-          <button
-            onClick={() => setShowAddLedgerRow(!showAddLedgerRow)}
-            className="align-left  rounded-xl bg-blue-500 p-2  text-white shadow-md hover:cursor-pointer hover:bg-blue-800 hover:shadow-none"
-          >
-            +
-          </button>
+            <button
+              onClick={() => setShowAddLedgerRow(!showAddLedgerRow)}
+              className="align-left  rounded-xl bg-blue-500 p-2  text-white shadow-md hover:cursor-pointer hover:bg-blue-800 hover:shadow-none"
+            >
+              +
+            </button>
+          </div>
         </div>
         {showAddLedgerRow && (
           <AddLedger addLedger={addLedger} categories={categoryQuery.data} />
@@ -162,4 +135,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Transactions;

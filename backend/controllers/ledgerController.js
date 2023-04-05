@@ -1,15 +1,19 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
 const { getDb } = require("../db/db");
+const {
+  validateAddLedger,
+  validateDeleteLedger,
+  validateGetLastLedgers,
+  validateGetLedgersBetween,
+} = require("../utilities/joi-validators");
 
 // @desc    get user's ledgers
 // @route   GET /api/ledgers
 // @access  private
 const getLedgers = asyncHandler(async (req, res) => {
   const user_id = req.user.id;
-  console.log("user_id", user_id);
+
   try {
     const ledgers = await getDb().any(
       "SELECT l.id, l.trans_type, l.name, l.amount, l.created_at, l.note, c.name AS category FROM ledgers l INNER JOIN categories c ON l.category_id = c.id WHERE l.user_id = $1",
@@ -27,7 +31,65 @@ const getLedgers = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    get user's ledgers
+// @desc    get user's last x ledgers
+// @route   GET /api/ledgers/last
+// @access  private
+const getLastLedgers = async (req, res) => {
+  const { error } = validateGetLastLedgers(req.body);
+  if (error) {
+    console.log("Validation error: ", error.details[0].message);
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
+  const user_id = req.user.id;
+  const { limit } = req.body;
+
+  try {
+    const lastLedgers = await getDb().any(
+      "SELECT l.id, l.trans_type, l.name, l.amount, l.created_at, l.note, c.name AS category FROM ledgers l INNER JOIN categories c ON l.category_id = c.id WHERE l.user_id = $1 ORDER BY l.created_at DESC LIMIT $2",
+      [user_id, limit]
+    );
+    res.status(201).json(JSON.stringify(lastLedgers));
+  } catch (error) {
+    console.error("ERROR: ", error);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify(error),
+    };
+  }
+};
+
+// @desc    get user's ledgers between two dates
+// @route   GET /api/ledgers/last
+// @access  private
+const getLedgersBetween = async (req, res) => {
+  const { error } = validateGetLedgersBetween(req.body);
+  if (error) {
+    console.log("Validation error: ", error.details[0].message);
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
+  const user_id = req.user.id;
+  const { start, end } = req.body;
+
+  try {
+    const lastLedgers = await getDb().any(
+      "SELECT l.id, l.trans_type, l.name, l.amount, l.created_at, l.note, c.name AS category FROM ledgers l INNER JOIN categories c ON l.category_id = c.id WHERE l.user_id = $1 AND l.created_at BETWEEN $2 AND $3 ORDER BY l.created_at DESC",
+      [user_id, start, end]
+    );
+    res.status(201).json(JSON.stringify(lastLedgers));
+  } catch (error) {
+    console.error("ERROR: ", error);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify(error),
+    };
+  }
+};
+
+// @desc    get user's balance
 // @route   GET /api/ledgers
 // @access  private
 const getBalance = asyncHandler(async (req, res) => {
@@ -38,11 +100,7 @@ const getBalance = asyncHandler(async (req, res) => {
       "SELECT SUM(CASE WHEN trans_type = 'INC' THEN amount ELSE 0 END) AS INCOME, SUM(CASE WHEN trans_type = 'EXP' THEN amount ELSE 0 END) AS EXPENSE FROM ledgers WHERE user_id = $1",
       [user_id]
     );
-    // const ledgers = await getDb().any(
-    //   "SELECT * from ledgers WHERE user_id = $1",
-    //   [user_id]
-    // );
-    // console.log(ledgers);
+
     res.status(201).json(JSON.stringify(ledgers));
   } catch (error) {
     console.error("ERROR: ", error);
@@ -58,6 +116,13 @@ const getBalance = asyncHandler(async (req, res) => {
 // @route   POST /api/ledgers
 // @access  private
 const addLedger = asyncHandler(async (req, res) => {
+  const { error } = validateAddLedger(req.body);
+  if (error) {
+    console.log("Validation error: ", error.details[0].message);
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
+
   const { category_id, trans_type, name, amount } = req.body;
   const note = req.body.note ? req.body.note : "";
   const id = uuidv4();
@@ -91,6 +156,12 @@ const updateLedger = asyncHandler(async (req, res) => {});
 // @route   DELETE /api/ledgers
 // @access  private
 const deleteLedger = asyncHandler(async (req, res) => {
+  const { error } = validateDeleteLedger(req.body);
+  if (error) {
+    console.log("Validation error: ", error.details[0].message);
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
   const { id } = req.body;
   const user_id = req.user.id;
 
@@ -115,4 +186,6 @@ module.exports = {
   updateLedger,
   deleteLedger,
   getBalance,
+  getLastLedgers,
+  getLedgersBetween,
 };

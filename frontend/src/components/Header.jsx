@@ -24,42 +24,45 @@ function Header() {
     <nav className="mx-auto  w-full">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between p-4">
         <div className="flex">
-          <Link to="/" className="text-xl font-semibold dark:text-white">
+          <Link
+            to="/"
+            className="text-xl font-bold text-blue-800 dark:text-white"
+          >
             BudgetBuddy
           </Link>
         </div>
         <div className="w-full">
           {user ? (
             <div className="flex align-middle">
-              {" "}
+              {/* {" "}
               <span className="w-1/2 align-bottom text-xl">
                 Welcome {user.name}!
-              </span>
+              </span> */}
               <div className="flex w-full items-center justify-end gap-6 text-lg">
                 {" "}
                 <Link
-                  to="/login"
+                  to="/transactions"
                   className="cursor-pointer text-gray-900 hover:text-gray-500 hover:shadow-sm"
                 >
                   Transactions
                 </Link>
                 <Link
-                  to="/login"
+                  to="/"
                   className="cursor-pointer text-gray-900 hover:text-gray-500 hover:shadow-sm"
                 >
-                  Categories
+                  Dashboard
                 </Link>
-                <button
-                  className="gap flex h-4/5 items-center rounded-lg bg-blue-500 p-1 px-2 align-middle text-white shadow-md hover:cursor-pointer hover:bg-blue-800 hover:shadow-none"
+                <span
+                  className="flex items-center gap-2 align-middle   text-gray-900 hover:cursor-pointer  hover:text-gray-500  hover:shadow-sm"
                   onClick={handleClick}
                 >
                   <FaSignOutAlt />
-                  Logout
-                </button>
+                  Log out
+                </span>
               </div>
             </div>
           ) : (
-            <div className="mt-4 flex w-full flex-col rounded-lg border border-gray-100 p-4 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:p-0   ">
+            <div className="mt-4 flex w-full flex-col justify-end rounded-lg border border-gray-100 p-4 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:p-0   ">
               <div className="py-2">
                 <Link
                   to="/login"

@@ -9,6 +9,7 @@ import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Header from "./components/Header";
@@ -25,6 +26,10 @@ function App() {
             <Route
               path="/"
               element={user ? <Dashboard /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/transactions"
+              element={user ? <Transactions /> : <Navigate to="/login" />}
             />
             <Route
               path="/login"

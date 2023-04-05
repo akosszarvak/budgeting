@@ -140,8 +140,6 @@ const deleteUser = asyncHandler(async (req, res) => {
     throw new Error(error.details[0].message);
   }
 
-  console.log("getting to the delete function");
-
   try {
     const getUser = await getDb().query(
       "SELECT * FROM users WHERE id = $1",

@@ -1,5 +1,3 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4, stringify } = require("uuid");
 const { getDb } = require("../db/db");
