@@ -48,11 +48,16 @@ function AddLedger({ addLedger, categories }) {
   };
 
   return (
-    <div className="flex">
-      <form onSubmit={onSubmit} className="flex">
-        <div className="flex flex-col">
-          <label>category</label>
-          <select value={category_id} name="category_id" onChange={onChange}>
+    <div className="mx-10 my-5 flex  items-center justify-between rounded-md border border-gray-300 bg-gray-100  p-3 align-middle shadow-md">
+      <form onSubmit={onSubmit} className="flex w-full justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-600">category</label>
+          <select
+            className=" h-10 w-full rounded border px-3 py-1 leading-tight text-gray-700 shadow focus:outline-none"
+            value={category_id}
+            name="category_id"
+            onChange={onChange}
+          >
             {categories.map((category) => (
               <option key={category.name} value={category.id}>
                 {category.name}
@@ -60,10 +65,10 @@ function AddLedger({ addLedger, categories }) {
             ))}
           </select>
         </div>
-        <div className="flex flex-col">
-          <label>name</label>
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-600">name</label>
           <input
-            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+            className="focus:shadow-outline h-10 w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="text"
             id="name"
             name="name"
@@ -72,10 +77,10 @@ function AddLedger({ addLedger, categories }) {
             onChange={onChange}
           />
         </div>
-        <div className="flex flex-col">
-          <label>amount</label>
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-600">amount</label>
           <input
-            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+            className="focus:shadow-outline h-10 w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="number"
             id="amount"
             name="amount"
@@ -84,10 +89,10 @@ function AddLedger({ addLedger, categories }) {
             onChange={onChange}
           />{" "}
         </div>
-        <div className="flex flex-col">
-          <label>note</label>
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-600">note</label>
           <input
-            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+            className="focus:shadow-outline h-10 w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             type="text"
             id="note"
             name="note"
@@ -96,9 +101,14 @@ function AddLedger({ addLedger, categories }) {
             onChange={onChange}
           />
         </div>
-        <div className="flex flex-col">
-          <label>type</label>
-          <select value={trans_type} name="trans_type" onChange={onChange}>
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-600">type</label>
+          <select
+            className=" h-10 w-full rounded border px-3 py-1 leading-tight text-gray-700 shadow focus:outline-none"
+            value={trans_type}
+            name="trans_type"
+            onChange={onChange}
+          >
             <option key="INC" value="INC">
               Income
             </option>
@@ -107,10 +117,10 @@ function AddLedger({ addLedger, categories }) {
             </option>
           </select>
         </div>{" "}
-        <div className="p-4">
+        <div className="flex items-end">
           <button
             type="submit"
-            className="rounded-lg bg-blue-500 p-2 text-white shadow-md hover:cursor-pointer hover:bg-blue-800 hover:shadow-none"
+            className="h-10 rounded-lg bg-blue-500 px-2 text-xs text-white shadow-md hover:cursor-pointer hover:bg-blue-800 hover:shadow-none"
           >
             Add transaction
           </button>
