@@ -33,7 +33,7 @@ const addLedgerSchema = Joi.object({
 });
 
 const getLastLedgersSchema = Joi.object({
-  limit: Joi.number().required.positive(),
+  limit: Joi.number().required().positive(),
 });
 
 const getLedgersBetweenSchema = Joi.object({
