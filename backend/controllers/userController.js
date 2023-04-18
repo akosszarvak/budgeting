@@ -14,7 +14,6 @@ const {
 // @desc    register new user
 // @route   POST /api/users
 // @access  Public
-
 const registerUser = asyncHandler(async (req, res) => {
   const { error } = validateRegister(req.body);
   if (error) {
@@ -75,6 +74,70 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    register new user
+// @route   POST /api/users
+// @access  Public
+
+const createAdminUser = asyncHandler(async (req, res) => {
+  const { error } = validateRegister(req.body);
+  if (error) {
+    console.log("Validation error:", error.details[0].message);
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
+  const { name, email, password } = req.body;
+
+  const id = uuidv4();
+
+  if (!name || !email || !password) {
+    res.status(400);
+    throw new Error(
+      "Please provide all required fields: ",
+      name,
+      email,
+      password
+    );
+  }
+
+  const userExists = await getDb().query(
+    "SELECT * FROM users WHERE email = $1",
+    [email]
+  );
+
+  if (userExists.length !== 0) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+  const role = "admin";
+  //hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  try {
+    const userResult = await getDb().query(
+      "INSERT INTO users (id, name, email, password, role) VALUES ($1, $2, $3, $4, $5)",
+      [id, name, email, hashedPassword, role]
+    );
+
+    console.log(`Admin created: `, email, name);
+
+    const user = {
+      _id: id,
+      name: name,
+      email: email,
+      token: generateToken(id),
+    };
+
+    res.status(201).json(user);
+  } catch (err) {
+    console.error("ERROR: ", err);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify(err),
+    };
+  }
+});
+
 // @desc   Get users data
 // @route   GET /api/users
 // @access  Private
@@ -106,7 +169,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
   const { email, password } = req.body;
 
-  // //check for user email
+  // check for user email
   const [user] = await getDb().query("SELECT * FROM users WHERE email = $1", [
     email,
   ]);
@@ -120,6 +183,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token: generateToken(user.id),
     });
   } else {
@@ -171,4 +235,10 @@ const generateToken = (id) => {
   });
 };
 
-module.exports = { registerUser, getUsers, loginUser, deleteUser };
+module.exports = {
+  registerUser,
+  getUsers,
+  loginUser,
+  deleteUser,
+  createAdminUser,
+};

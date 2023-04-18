@@ -9,7 +9,7 @@ const {
   updateLedger,
   deleteLedger,
 } = require("../controllers/ledgerController");
-const { protect } = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authenticationMiddleware");
 
 router.post("/", protect, addLedger);
 router.get("/", protect, getLedgers);

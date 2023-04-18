@@ -6,11 +6,12 @@ const {
   addUserCategory,
   deleteCategory,
 } = require("../controllers/categoryController");
-const { protect } = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authenticationMiddleware");
+const { verify } = require("../middleware/authorizationMiddleware");
 
 router.get("/", protect, getCategories);
-router.post("/", protect, addCategory);
+router.post("/", protect, verify, addCategory);
 router.post("/user-category", protect, addUserCategory);
-router.delete("/", protect, deleteCategory);
+router.delete("/", protect, verify, deleteCategory);
 
 module.exports = router;

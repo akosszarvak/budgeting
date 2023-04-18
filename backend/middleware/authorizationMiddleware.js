@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { getDb } = require("../db/db");
 const asyncHandler = require("express-async-handler");
 
-const protect = asyncHandler(async (req, res, next) => {
+const verify = asyncHandler(async (req, res, next) => {
   let token;
 
   if (
@@ -18,12 +18,18 @@ const protect = asyncHandler(async (req, res, next) => {
 
       // Get user from the token
       const query = await getDb().any(
-        "SELECT id, email, name FROM users WHERE id = $1;",
+        "SELECT id, email, name, role FROM users WHERE id = $1;",
         [decoded.id]
       );
       req.user = query[0];
 
-      next();
+      if (req.user.role === "admin") {
+        next();
+      } else {
+        console.log("User not authorized");
+        res.status(401);
+        throw new Error("Not authorized");
+      }
     } catch (error) {
       console.log(error);
       res.status(401);
@@ -37,4 +43,4 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = { protect };
+module.exports = { verify };
