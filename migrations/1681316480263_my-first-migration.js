@@ -45,7 +45,8 @@ exports.up = async (pgm) => {
       name VARCHAR(70) NOT NULL,
       email VARCHAR(120) NOT NULL,
       password VARCHAR(255) NOT NULL,
-      confirmed VARCHAR(225) NOT NULL DEFAULT false,
+      role VARCHAR(10) NOT NULL DEFAULT 'user',
+      confirmed BOOLEAN NOT NULL DEFAULT false,
       created_at TIMESTAMP WITHOUT TIME ZONE NULL DEFAULT now()
     );
 
