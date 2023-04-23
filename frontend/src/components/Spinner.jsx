@@ -1,7 +1,11 @@
 import React from "react";
 
-function Loading() {
-  return <div>Loading..</div>;
+function Spinner() {
+  return (
+    <div className="flex items-center justify-center">
+      <div className="h-12 w-12 animate-spin rounded-full border-t-4 border-solid border-blue-300"></div>
+    </div>
+  );
 }
 
-export default Loading;
+export default Spinner;

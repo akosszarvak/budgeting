@@ -14,7 +14,6 @@ export const useSignup = () => {
     setSuccess(null);
 
     const response = await authHelpers.register(userData);
-    console.log("response in usesignup hook: ", response);
 
     if (response.status === 201) {
       //save user to localstorage

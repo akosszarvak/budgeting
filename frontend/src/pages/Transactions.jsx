@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 
 import { useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
-import Loading from "../components/Spinner";
 import LedgerRow from "../components/LedgerRow";
-import AddLedger from "../components/AddLedger";
 import { ledgerCalls } from "../api/ledgerCalls";
-import { categoryCalls } from "../api/categoryCalls";
+
+const AddLedger = lazy(() => import("../components/AddLedger"));
+const Spinner = lazy(() => import("../components/Spinner"));
 
 function Transactions() {
   const [showAddLedgerRow, setShowAddLedgerRow] = useState(false);
   const queryClient = useQueryClient();
   const { user } = useAuthContext();
-  // const { isLoading, data: ledgers } = useQuery("ledgers");
 
-  const [ledgerQuery, balanceQuery, categoryQuery] = useQueries({
+  const [ledgerQuery] = useQueries({
     queries: [
       {
         queryKey: ["ledgers", user],
@@ -22,29 +21,8 @@ function Transactions() {
           return ledgerCalls.getLedgers(user);
         },
       },
-      {
-        queryKey: ["balance", user],
-        queryFn: (user) => {
-          return ledgerCalls.getBalance(user);
-        },
-      },
-      {
-        queryKey: ["categories", user],
-        queryFn: (user) => {
-          return categoryCalls.getCategories(user);
-        },
-      },
     ],
   });
-
-  // const { mutate: updateLedger } = useMutation(
-  //   (updatedLedger) => ledgerCalls.updatesLedger(updatedLedger),
-  //   {
-  //     onSettled: () => {
-  //       queryClient.invalidateQueries(["ledgers"]);
-  //     },
-  //   }
-  // );
 
   const { mutate: addLedger } = useMutation(
     (updatedLedger) => ledgerCalls.addLedger(updatedLedger, user),
@@ -67,25 +45,12 @@ function Transactions() {
   );
 
   if (ledgerQuery.isLoading) {
-    return <span>Loading...</span>;
-  }
-  if (balanceQuery.isLoading) {
-    return <span>Loading...</span>;
-  }
-  if (categoryQuery.isLoading) {
-    return <span>Loading...</span>;
+    return <Spinner />;
   }
 
-  if (ledgerQuery.isError) {
-    return <span>Error: {error.message}</span>;
-  }
-  if (balanceQuery.isError) {
-    return <span>Error: {error.message}</span>;
-  }
-
-  if (categoryQuery.isError) {
-    return <span>Error: {error.message}</span>;
-  }
+  // if (ledgerQuery.isError) {
+  //   return <span>Error: {error.message}</span>;
+  // }
 
   return (
     <div className="my-3 pt-5 pb-4">
@@ -119,9 +84,9 @@ function Transactions() {
             </button>
           </div>
         </div>
-        {showAddLedgerRow && (
-          <AddLedger addLedger={addLedger} categories={categoryQuery.data} />
-        )}
+        <Suspense fallback={<div>Loading...</div>}>
+          <AddLedger addLedger={addLedger} isShown={showAddLedgerRow} />
+        </Suspense>
         {ledgerQuery.data.map((ledger, index) => (
           <LedgerRow
             ledger={ledger}

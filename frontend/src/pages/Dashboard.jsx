@@ -1,20 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 
 import { useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
-import Loading from "../components/Spinner";
 import LedgerRow from "../components/LedgerRow";
-import AddLedger from "../components/AddLedger";
 import { ledgerCalls } from "../api/ledgerCalls";
-import { categoryCalls } from "../api/categoryCalls";
+import { useMemo } from "react";
+
+const AddLedger = lazy(() => import("../components/AddLedger"));
+const Spinner = lazy(() => import("../components/Spinner"));
+
+const getBalance = (data, key) => {
+  if (!data || data.length < 1) {
+    return 0;
+  }
+
+  const balance = parseFloat(data[0][key]);
+
+  if (isNaN(balance)) {
+    return 0;
+  }
+
+  return balance;
+};
 
 function Dashboard() {
   const [showAddLedgerRow, setShowAddLedgerRow] = useState(false);
   const queryClient = useQueryClient();
   const { user } = useAuthContext();
-  // const { isLoading, data: ledgers } = useQuery("ledgers");
 
-  const [ledgerQuery, balanceQuery, categoryQuery] = useQueries({
+  const [ledgerQuery, balanceQuery] = useQueries({
     queries: [
       {
         queryKey: ["ledgers", user],
@@ -28,23 +42,8 @@ function Dashboard() {
           return ledgerCalls.getBalance(user);
         },
       },
-      {
-        queryKey: ["categories", user],
-        queryFn: (user) => {
-          return categoryCalls.getCategories(user);
-        },
-      },
     ],
   });
-
-  // const { mutate: updateLedger } = useMutation(
-  //   (updatedLedger) => ledgerCalls.updatesLedger(updatedLedger),
-  //   {
-  //     onSettled: () => {
-  //       queryClient.invalidateQueries(["ledgers"]);
-  //     },
-  //   }
-  // );
 
   const { mutate: addLedger } = useMutation(
     (updatedLedger) => ledgerCalls.addLedger(updatedLedger, user),
@@ -66,25 +65,18 @@ function Dashboard() {
     }
   );
 
-  if (ledgerQuery.isLoading) {
-    return <span>Loading...</span>;
-  }
-  if (balanceQuery.isLoading) {
-    return <span>Loading...</span>;
-  }
-  if (categoryQuery.isLoading) {
-    return <span>Loading...</span>;
-  }
+  const income = useMemo(
+    () => getBalance(balanceQuery.data, "income"),
+    [balanceQuery]
+  );
 
-  if (ledgerQuery.isError) {
-    return <span>Error: {error.message}</span>;
-  }
-  if (balanceQuery.isError) {
-    return <span>Error: {error.message}</span>;
-  }
+  const expense = useMemo(
+    () => getBalance(balanceQuery.data, "expense"),
+    [balanceQuery]
+  );
 
-  if (categoryQuery.isError) {
-    return <span>Error: {error.message}</span>;
+  if ([ledgerQuery.isLoading, balanceQuery.isLoading].includes(true)) {
+    return <Spinner />;
   }
 
   return (
@@ -92,20 +84,14 @@ function Dashboard() {
       <div className="flex justify-between gap-4 p-3 text-left align-middle">
         <div className=" bg-blue-200 ">
           <h2 className="text-3xl text-blue-900 ">
-            {parseInt(balanceQuery.data[0].income) -
-              parseInt(balanceQuery.data[0].expense)}{" "}
-            HUF
+            {`${income - expense} HUF`}
           </h2>
           <p className="text-xs text-blue-500">Current balance</p>
         </div>
         <div className="flex flex-col items-center">
-          <h2 className="text-lg text-green-700">
-            {balanceQuery.data[0].income} HUF
-          </h2>
+          <h2 className="text-lg text-green-700">{income} HUF</h2>
           <p className="text-xs text-blue-500">Income</p>{" "}
-          <h2 className="text-lg text-red-700">
-            {balanceQuery.data[0].expense} HUF
-          </h2>
+          <h2 className="text-lg text-red-700">{expense} HUF</h2>
           <p className="text-xs  text-blue-500">Expenses</p>
         </div>
 
@@ -146,9 +132,9 @@ function Dashboard() {
             +
           </button>
         </div>
-        {showAddLedgerRow && (
-          <AddLedger addLedger={addLedger} categories={categoryQuery.data} />
-        )}
+        <Suspense fallback={<div>Loading...</div>}>
+          <AddLedger addLedger={addLedger} isShown={showAddLedgerRow} />
+        </Suspense>
         {ledgerQuery.data.map((ledger, index) => (
           <LedgerRow
             ledger={ledger}
