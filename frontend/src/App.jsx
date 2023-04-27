@@ -21,7 +21,7 @@ const Spinner = lazy(() => import("./components/Spinner"));
 function App() {
   const { user } = useAuthContext();
   return (
-    <div className="px-auto mx-auto flex min-h-screen min-h-screen flex-col bg-slate-50 dark:bg-gray-900">
+    <div className="px-auto mx-auto flex min-h-screen flex-col bg-slate-50 dark:bg-gray-900">
       <Router>
         <div className="container mx-auto bg-slate-50">
           <Header />

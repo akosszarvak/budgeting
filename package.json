@@ -8,7 +8,9 @@
     "server": "nodemon backend/server.js",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate",
+    "test": "jest",
+    "test:custom": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +26,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.3"
   }
 }

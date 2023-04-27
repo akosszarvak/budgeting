@@ -48,9 +48,9 @@ function Transactions() {
     return <Spinner />;
   }
 
-  // if (ledgerQuery.isError) {
-  //   return <span>Error: {error.message}</span>;
-  // }
+  if (ledgerQuery.error !== null) {
+    return <span>Error: {error.message}</span>;
+  }
 
   return (
     <div className="my-3 pt-5 pb-4">

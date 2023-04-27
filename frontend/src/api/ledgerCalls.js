@@ -53,6 +53,7 @@ const addLedger = async (ledgerData, user) => {
     return JSON.parse(response.data);
   } catch (error) {
     console.log("error here");
+    console.log(error.response);
 
     return error.response;
   }

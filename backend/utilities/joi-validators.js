@@ -28,7 +28,7 @@ const addLedgerSchema = Joi.object({
     .required(),
   trans_type: Joi.string().valid("INC", "EXP"),
   name: Joi.string().required(),
-  note: Joi.string(),
+  note: Joi.string().allow(""),
   amount: Joi.number().required().positive(),
 });
 

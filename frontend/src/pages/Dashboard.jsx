@@ -79,6 +79,10 @@ function Dashboard() {
     return <Spinner />;
   }
 
+  if (ledgerQuery.error !== null || balanceQuery.error !== null) {
+    return <span>Error: {error.message}</span>;
+  }
+
   return (
     <div className="pt-8">
       <div className="flex justify-between gap-4 p-3 text-left align-middle">

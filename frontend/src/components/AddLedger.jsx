@@ -41,11 +41,6 @@ function AddLedger({ addLedger, isShown }) {
         return;
       }
 
-      if (note.length < 1) {
-        toast.error("Please add a note for the transaction");
-        return;
-      }
-
       const numAmount = parseFloat(amount);
       if (isNaN(numAmount)) {
         toast.error("Please enter a valid amount");
@@ -59,12 +54,14 @@ function AddLedger({ addLedger, isShown }) {
 
       try {
         await addLedger(formData);
-        setFormData((prevState) => ({
-          ...prevState,
-          name: "",
-          amount: 0,
-          note: "",
-        }));
+        if (response.status === 201) {
+          setFormData((prevState) => ({
+            ...prevState,
+            name: "",
+            amount: 0,
+            note: "",
+          }));
+        }
       } catch (err) {
         if (!err?.response) {
           toast.error("No server response");
@@ -88,6 +85,10 @@ function AddLedger({ addLedger, isShown }) {
       }));
     }
   }, [categories]);
+
+  if (categoryQuery.error !== null) {
+    return <span>Error: {error.message}</span>;
+  }
 
   return (
     <div

@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4, stringify } = require("uuid");
@@ -8,43 +7,12 @@ const {
   validateLogin,
   validateDeleteUser,
 } = require("../utilities/joi-validators");
+const generateToken = require("../utilities/generateToken");
 
 //TODO: add update user functionality
 
-// @desc    register new user
-// @route   POST /api/users
-// @access  Public
-const registerUser = asyncHandler(async (req, res) => {
-  const { error } = validateRegister(req.body);
-  if (error) {
-    console.log("Validation error:", error.details[0].message);
-    res.status(400);
-    throw new Error(error.details[0].message);
-  }
-  const { name, email, password } = req.body;
-
+const createUser = asyncHandler(async ({ name, email, password }) => {
   const id = uuidv4();
-
-  if (!name || !email || !password) {
-    res.status(400);
-    throw new Error(
-      "Please provide all required fields: ",
-      name,
-      email,
-      password
-    );
-  }
-
-  const userExists = await getDb().query(
-    "SELECT * FROM users WHERE email = $1",
-    [email]
-  );
-
-  if (userExists.length !== 0) {
-    res.status(400);
-    throw new Error("User already exists");
-  }
-
   //hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -60,13 +28,57 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: id,
       name: name,
       email: email,
+      role: "user",
       token: generateToken(id),
     };
 
-    res.status(201).json(user);
+    return user;
   } catch (err) {
     console.error("ERROR: ", err);
 
+    return {
+      statusCode: 500,
+      body: JSON.stringify(err),
+    };
+  }
+});
+// @desc    register new user
+// @route   POST /api/users
+// @access  Public
+const registerUser = asyncHandler(async (req, res) => {
+  try {
+    const { error } = validateRegister(req.body);
+    if (error) {
+      console.log("Validation error:", error.details[0].message);
+      res.status(400);
+      throw new Error(error.details[0].message);
+    }
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      res.status(400);
+      throw new Error(
+        "Please provide all required fields: ",
+        name,
+        email,
+        password
+      );
+    }
+
+    const userExists = await getDb().query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
+
+    if (userExists.length !== 0) {
+      res.status(400);
+      throw new Error("User already exists");
+    }
+
+    const user = await createUser({ name, email, password });
+    res.status(201).json(user);
+  } catch (err) {
+    console.error("ERROR: ", err);
     return {
       statusCode: 500,
       body: JSON.stringify(err),
@@ -124,6 +136,7 @@ const createAdminUser = asyncHandler(async (req, res) => {
       _id: id,
       name: name,
       email: email,
+      role: role,
       token: generateToken(id),
     };
 
@@ -229,11 +242,11 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 // generate JWT
-const generateToken = (id) => {
-  return jwt.sign({ id: id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
-};
+// const generateToken = (id) => {
+//   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
+//     expiresIn: "30d",
+//   });
+// };
 
 module.exports = {
   registerUser,
