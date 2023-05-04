@@ -5,15 +5,15 @@ const {
   getUsers,
   loginUser,
   deleteUser,
-  createAdminUser,
+  registerAdminUser,
 } = require("../controllers/userController");
 const { protect } = require("../middleware/authenticationMiddleware");
 const { verify } = require("../middleware/authorizationMiddleware");
 
 router.post("/", registerUser);
-router.post("/admin", protect, verify, createAdminUser);
+router.post("/admin", protect, verify, registerAdminUser);
 router.post("/login", loginUser);
 router.get("/", protect, verify, getUsers);
-router.delete("/", protect, deleteUser);
+router.delete("/", protect, verify, deleteUser);
 
 module.exports = router;
