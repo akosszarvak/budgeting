@@ -38,6 +38,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const user = await createUser({ name, email, password });
+
     res.status(201).json(user);
   } catch (err) {
     console.error("ERROR: ", err);
@@ -51,7 +52,6 @@ const registerUser = asyncHandler(async (req, res) => {
 // @desc    register new user
 // @route   POST /api/users
 // @access  Public
-
 const registerAdminUser = asyncHandler(async (req, res) => {
   try {
     const { error } = validateRegister(req.body);
@@ -62,7 +62,7 @@ const registerAdminUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
 
     if (await checkIfUserExists({ email })) {
-      return res.status(400).json({ message: "User already exists" });
+      res.status(400).json({ message: "User already exists" });
     }
 
     const user = await createAdminUser({ name, email, password });
@@ -101,8 +101,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
   const { error } = validateLogin(req.body);
   if (error) {
     console.log("Validation error:", error.details[0].message);
-    res.status(400);
-    throw new Error(error.details[0].message);
+    res.status(400).json({ message: error.details[0].message });
   }
 
   const { email, password } = req.body;
@@ -136,7 +135,7 @@ const deleteUser = asyncHandler(async (req, res) => {
   if (error) {
     console.log("Validation error:", error.details[0].message);
     res.status(400);
-    return res.status(400).json({ message: error.details[0].message });
+    res.status(400).json({ message: error.details[0].message });
   }
 
   const { id } = req.body;

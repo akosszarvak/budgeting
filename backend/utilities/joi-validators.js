@@ -5,7 +5,7 @@ const validator = (schema) => (payload) =>
 
 const idSchema = Joi.object({
   id: Joi.string()
-    .guid({ version: ["uuidv4"] })
+    .uuid({ version: ["uuidv4"] })
     .required(),
 });
 
@@ -42,6 +42,7 @@ const getLedgersBetweenSchema = Joi.object({
 });
 // Category Controller
 
+exports.validateId = validator(idSchema);
 exports.validateRegister = validator(registerSchema);
 exports.validateLogin = validator(loginSchema);
 exports.validateDeleteUser = validator(idSchema);
